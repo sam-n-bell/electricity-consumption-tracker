@@ -34,7 +34,6 @@ target_metadata = PG_BASE.metadata
 # ... etc.
 
 
-
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
 

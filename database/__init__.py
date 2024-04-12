@@ -1,14 +1,20 @@
 import contextlib
 from dataclasses import dataclass
-from typing import AsyncIterator, Any
+from typing import Any, AsyncIterator
 
 import structlog
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncConnection, AsyncSession
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.ext.asyncio import (
+    AsyncConnection,
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
+from sqlalchemy.orm import Session
 
 import settings
 
 logger = structlog.get_logger("eleconsurp")
+
 
 @dataclass
 class DatabaseConfig:

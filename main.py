@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
-from routers.system import router as system_router
 from routers.data import router as data_router
+from routers.system import router as system_router
 
 app = FastAPI()
 
