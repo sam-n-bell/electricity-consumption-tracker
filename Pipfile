@@ -1,0 +1,31 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+uvicorn = {extras = ["standard"], version = "*"}
+psycopg2-binary = "*"
+alembic = "*"
+fastapi = "*"
+python-dotenv = "*"
+structlog = "*"
+pytest = "*"
+httpx = "*"
+pydantic-settings = "*"
+asyncpg = {version = "0.29.0"}
+sqlalchemy = {version = "*", extras = ["asyncio"]}
+python-multipart = "*"
+
+[dev-packages]
+black = "*"
+isort = "*"
+flake8 = "*"
+
+[requires]
+python_version = "3.10"
+
+[scripts]
+format = "black ."
+sort = "isort --profile black ."
+lint = "flake8 ."
