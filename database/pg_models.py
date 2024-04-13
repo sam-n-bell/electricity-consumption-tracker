@@ -7,8 +7,8 @@ from sqlalchemy.orm import Mapped, mapped_column
 PG_BASE = declarative_base()
 
 
-class EnergyStats(PG_BASE):
-    __tablename__ = "energy_stats"
+class EnergyStat(PG_BASE):
+    __tablename__ = "energy_stat"
     id: Mapped[UUID] = mapped_column(
         UUID, primary_key=True, server_default=func.gen_random_uuid()
     )
