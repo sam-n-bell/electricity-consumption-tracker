@@ -34,6 +34,8 @@ class DatabaseConfig:
             f"{self.host}:"
             f"{self.port}/"
             f"{self.db}"
+            # "?sslmode=require"
+            # "&sslrootcert=/usr/src/app/database/ca-certificate.crt"
         )
 
 
@@ -87,6 +89,9 @@ class DatabaseSessionManager:
         finally:
             await session.close()
 
+
+# 'sslmode': 'require',
+#         'sslrootcert': ca_cert_path
 
 sessionmanager = DatabaseSessionManager(get_postgres_conn_str(), {"echo": True})
 
