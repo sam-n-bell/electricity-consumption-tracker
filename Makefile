@@ -11,3 +11,11 @@ db-revision:
 
 db-migrate:
 	docker-compose run eleconsurp_api alembic upgrade head
+
+format:
+	pipenv run sort
+	pipenv run format
+
+lint:
+	pipenv run lint
+
