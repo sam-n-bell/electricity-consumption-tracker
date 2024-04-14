@@ -1,4 +1,5 @@
 from datetime import date, time
+
 from sqlalchemy import Boolean, Date, Float, Time, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.declarative import declarative_base

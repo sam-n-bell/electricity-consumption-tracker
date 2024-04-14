@@ -1,15 +1,21 @@
 import csv
 import shutil
-from datetime import datetime, date
+from datetime import date, datetime
 from enum import Enum
 from tempfile import NamedTemporaryFile
 
 from fastapi import APIRouter, UploadFile
 
+from database.data import get_aggregate_energy
+from database.data import get_energy as db_get_energy
 from database.pg_models import EnergyStat
 from dependencies.db_session_dep import DBSessionDep
-from database.data import get_energy as db_get_energy
-from models.responses.data import EnergyUses, EnergyUse
+from models.responses.data import (
+    AggregateEnergyResponse,
+    AggregateEnergyUse,
+    EnergyUse,
+    EnergyUses,
+)
 
 router = APIRouter(prefix="/data", tags=["data"])
 
@@ -20,7 +26,13 @@ class EnergyClassification(str, Enum):
     consumption = "consumption"
 
 
-@router.get("/energy")
+class AggregateDateBy(str, Enum):
+    day = "day"
+    week = "week"
+    month = "month"
+
+
+@router.get("/energy", response_model_exclude_none=True)
 async def get_energy(
     db: DBSessionDep,
     energyClassification: EnergyClassification,
@@ -39,11 +51,39 @@ async def get_energy(
             start_time=r.start_time,
             end_time=r.end_time,
             date_of_record=r.use_date,
-            is_surplus=r.surplus,
+            surplus=True if r.surplus else None,
+            consumed=False if not r.surplus else None,
         )
         for r in results
     ]
     return EnergyUses(results=models)
+
+
+@router.get("/energy/aggregates", response_model_exclude_none=True)
+async def get_energy_aggregates(
+    db: DBSessionDep,
+    aggregateDateBy: AggregateDateBy,
+    start_date: date = None,
+    end_date: date = None,
+) -> AggregateEnergyResponse:
+    data = await get_aggregate_energy(
+        db_session=db,
+        group_date_by=aggregateDateBy,
+        start_date=start_date,
+        end_date=end_date,
+    )
+    results = []
+    for group, is_surplus, kwh in data:
+        results.append(
+            AggregateEnergyUse(
+                surplus=True if is_surplus else None,
+                consumed=True if not is_surplus else None,
+                kwh=kwh,
+                group_number=group,
+                grouped_by=aggregateDateBy,
+            )
+        )
+    return AggregateEnergyResponse(results=results)
 
 
 @router.post("/energy-csv", status_code=201)
