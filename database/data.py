@@ -42,6 +42,7 @@ async def get_aggregate_energy(
         stmt = stmt.where(EnergyStat.use_date <= end_date)
     if start_date:
         stmt = stmt.where(EnergyStat.use_date >= start_date)
+    stmt = stmt.order_by(extract(group_date_by, EnergyStat.use_date), EnergyStat.surplus)
     stmt = stmt.group_by(
         extract(group_date_by, EnergyStat.use_date), EnergyStat.surplus
     )
