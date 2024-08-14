@@ -1,6 +1,6 @@
 import csv
 import shutil
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from enum import Enum
 from tempfile import NamedTemporaryFile
 
@@ -39,6 +39,16 @@ async def get_energy(
     start_date: date = None,
     end_date: date = None,
 ) -> EnergyUses:
+
+    if not end_date:
+        end_date = datetime.today().date()
+    if not start_date:
+        start_date = datetime.today().date() - timedelta(days=1)
+    if start_date > end_date:
+        raise Exception("invalid date range")
+    if end_date - start_date > 3:
+        raise Exception("Pick a shorter date range")
+
     results: list[EnergyStat] = await db_get_energy(
         db_session=db,
         classification=energyClassification,
